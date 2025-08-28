@@ -1,11 +1,172 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import photography_1 from "../assets/images/photography (1).jpg";
+import photography_2 from "../assets/images/photography (2).jpg";
+import photography_3 from "../assets/images/photography (3).jpg";
+import photography_4 from "../assets/images/photography (4).jpg";
+import photography_5 from "../assets/images/photography (5).jpg";
+import photography_6 from "../assets/images/photography (6).jpg";
 ---
 
 <Layout>
-	<Welcome />
+  <main
+    id="main-container"
+    class="relative flex items-center justify-center w-full h-screen overflow-hidden bg-[#d3a14a] text-white isolation-auto"
+  >
+    <h1
+      id="title-corp"
+      class="text-[5.5em] relative text-white font-bold uppercase -tracking-[0.4rem] select-none z-10"
+    >
+      Brundery
+    </h1>
+
+    <div class="absolute w-full bottom-5 px-10 z-20 select-none">
+      <p
+        id="progress-text"
+        class="w-full text-end text-4xl font-bold uppercase"
+      >
+        0%
+      </p>
+      <div class="w-full h-1 mt-1 rounded-full">
+        <div
+          id="progress-bar"
+          class="h-1 bg-white rounded-full"
+          style="width:0%"
+        >
+        </div>
+      </div>
+    </div>
+
+    <button
+      id="menu-btn"
+      class="absolute top-8 right-8 text-2xl font-bold italic text-white mix-blend-difference opacity-0 z-20 select-none hover:scale-110 transition-discrete duration-300 cursor-pointer
+	  after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:bg-blend-difference after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
+      >Menu</button
+    >
+
+    <section class="select-none">
+      <img
+        class="absolute -top-10 left-40 w-auto h-[250px] rounded-md object-cover"
+        src={photography_4.src}
+        alt="photography 4"
+      /><img
+        class="absolute top-1/2 -left-[2%] w-auto h-[200px] rounded-md object-cover"
+        src={photography_5.src}
+        alt="photography 5"
+      /><img
+        class="absolute bottom-1 left-1/3 w-auto h-[150px] rounded-md object-cover"
+        src={photography_3.src}
+        alt="photography 2"
+      /><img
+        class="absolute bottom-1/8 right-5 w-auto h-[200px] rounded-md object-cover"
+        src={photography_2.src}
+        alt="photography 3"
+      /><img
+        class="absolute top-1 right-1 w-auto h-[300px] rounded-md object-cover"
+        src={photography_1.src}
+        alt="photography 1"
+      />
+      <img
+        class="absolute top-5 left-[60%] w-auto h-[200px] rounded-md object-cover"
+        src={photography_6.src}
+        alt="photography 6"
+      />
+    </section>
+  </main>
 </Layout>
+
+<script>
+  import { gsap } from "gsap";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+
+    const tl = gsap.timeline({
+      defaults: { duration: 1.5, ease: "power2.out" },
+      onUpdate: () => {
+        const progress = Math.floor(tl.progress() * 100);
+
+        if (!progressBar || !progressText) return;
+
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `${progress}%`;
+      },
+      onComplete: () => {
+        if (!progressBar || !progressText) return;
+
+        const images = document.querySelectorAll("section img");
+
+        const endTl = gsap.timeline({ defaults: { duration: 1 } });
+        endTl
+          .to(progressBar, { opacity: 0 })
+          .to(progressText, { opacity: 0 }, "<")
+          .to("#main-container", { backgroundColor: "#FFFFFF" }, ">")
+          .to(
+            "#title-corp",
+            {
+              onStart: () => {
+                const title = document.getElementById("title-corp");
+
+                if (!title) return;
+                title.classList.add("mix-blend-difference");
+              },
+              duration: 1,
+            },
+            "<+0.35"
+          );
+
+        document.addEventListener("mousemove", (e) => {
+          const { innerWidth, innerHeight } = window;
+          const x = (e.clientX - innerWidth / 2) / innerWidth;
+          const y = (e.clientY - innerHeight / 2) / innerHeight;
+
+          images.forEach((img, i) => {
+            let strength = i % 2 === 0 ? 30 : 40;
+
+            gsap.to(img, {
+              x: x * strength * (i + 1),
+              y: y * strength * (i + 1),
+              duration: 0.8,
+              ease: "power3.out",
+            });
+          });
+        });
+
+        endTl.to("#menu-btn", { opacity: 1, duration: 1 }, "<+0.2");
+      },
+    });
+
+    tl.from("section img", {
+      filter: "blur(4px)",
+      opacity: 0,
+      y: 100,
+      stagger: 0.5,
+    });
+  });
+
+  const button = document.getElementById("menu-btn");
+  const closeBtn = document.getElementById("close-btn");
+  const header = document.getElementById("main-header");
+  if (button) {
+    button.addEventListener("click", (e) => {
+      if (!header) return;
+      e.stopPropagation();
+      gsap.to(header, { display: "block" });
+      button.style.display = "none";
+      gsap.to(header, { opacity: 1, duration: 1, ease: "power2.inOut" });
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!header) return;
+
+      gsap.to(header, { opacity: 0, duration: 1, ease: "power2.inOut" });
+      if (button) button.style.display = "block";
+      gsap.to(header, { display: "none" });
+    });
+  }
+</script>
