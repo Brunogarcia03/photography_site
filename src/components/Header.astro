@@ -1,3 +1,18 @@
+---
+import photography_12 from "../assets/images/photography (12).jpg";
+import photography_18 from "../assets/images/photography (18).jpg";
+import photography_17 from "../assets/images/photography (17).jpg";
+import photography_16 from "../assets/images/photography (16).jpg";
+import HoverImage from "./animations/HoverImage.astro";
+
+const listLinks = [
+  { name: "Home", href: "/", image: photography_12 },
+  { name: "About", href: "/about", image: photography_18 },
+  { name: "Services", href: "/services", image: photography_17 },
+  { name: "Contact", href: "/contact", image: photography_16 },
+];
+---
+
 <header
   id="main-header"
   class="absolute top-0 left-0 w-[100vw] h-screen bg-white z-[999] overflow-hidden"
@@ -10,6 +25,26 @@
       >Close</button
     >
 
-    <div class="absolute top-1/2 -translate-y-1/2">Hola</div>
+    <nav class="w-full h-full p-[5em]">
+      <div
+        class="relative flex flex-col justify-start mt-[5em] mr-[10vw] h-full"
+      >
+        <div class="flex flex-wrap gap-[3em]">
+          {
+            listLinks.map((link, index) => (
+              <a
+                class="relative text-[6em] leading-[1.2] font-bold group hover:scale-100 transition-discrete duration-300 cursor-pointer"
+                href={link.href}
+              >
+                <span class="relative z-[1] hover:mix-blend-difference">
+                  {link.name}
+                </span>
+                <HoverImage image={link.image} delay={index} />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </nav>
   </div>
 </header>

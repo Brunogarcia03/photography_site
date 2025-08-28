@@ -1,0 +1,52 @@
+---
+const { image } = Astro.props;
+---
+
+<img
+  class={`hover-image absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-0 aspect-video h-[250px] max-w-[35vw] object-cover pointer-events-none z-[50]`}
+  src={image.src}
+  alt="hover image"
+/>
+
+<script>
+  import { gsap } from "gsap";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const hoverImages = document.querySelectorAll(".hover-image");
+
+    hoverImages.forEach((hoverImage) => {
+      const parentLink = hoverImage.parentElement;
+
+      parentLink?.addEventListener("mouseenter", () => {
+        gsap.to(hoverImage, {
+          duration: 0.5,
+          width: "35vw",
+          ease: "power2.out",
+        });
+      });
+
+      parentLink?.addEventListener("mousemove", (e) => {
+        const rect = parentLink.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const percentX = (x / rect.width) * 100;
+        const percentY = (y / rect.height) * 100;
+
+        gsap.to(hoverImage, {
+          duration: 0.3,
+          left: `${percentX}%`,
+          top: `${percentY}%`,
+          ease: "power2.out",
+        });
+      });
+
+      parentLink?.addEventListener("mouseleave", () => {
+        gsap.to(hoverImage, {
+          duration: 0.5,
+          width: "0px",
+          ease: "power2.out",
+        });
+      });
+    });
+  });
+</script>

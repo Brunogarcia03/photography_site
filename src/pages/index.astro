@@ -84,7 +84,7 @@ import photography_6 from "../assets/images/photography (6).jpg";
     const progressText = document.getElementById("progress-text");
 
     const tl = gsap.timeline({
-      defaults: { duration: 1.5, ease: "power2.out" },
+      defaults: { duration: 1, ease: "power2.out" },
       onUpdate: () => {
         const progress = Math.floor(tl.progress() * 100);
 
